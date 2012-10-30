@@ -122,7 +122,6 @@ function _domain_menu_permissions_menu_overview_page() {
       $rows[] = $row;
     }
   }
-
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
@@ -139,15 +138,9 @@ function domain_menu_permissions_module_implements_alter(&$implementations, $hoo
   if ($hook == 'form_menu_edit_item_alter' && is_array($implementations)) {
     unset($implementations['menu']);
   }  
-
-  if ($hook == 'form_alter' && is_array($implementations)) {
-    unset($implementations['menu']);
-  }  
   if ($hook == 'parent_options' && is_array($implementations)) {
     unset($implementations['menu']);
   }
-
-
 }
 
 /**
