@@ -59,6 +59,7 @@ function _domain_menu_permissions_access($perm = NULL, $domain_id = NULL) {
   return FALSE;
 }
 
+
 /**
  * Determine if user is assigned to a domain.
  */
@@ -90,6 +91,10 @@ function _domain_menu_permissions_menu_link_access($menu = NULL) {
   $domain = domain_get_domain();
   global $user;
 
+  if (user_access('administer menu')) {
+    return TRUE;
+  }
+
   if ($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source')
   && _domain_menu_permissions_access('edit domain menu', $domain['domain_id']) ) {
     return TRUE;
@@ -98,8 +103,9 @@ function _domain_menu_permissions_menu_link_access($menu = NULL) {
   //return user_access('administer menu');
 }
 
-
-/* Building the Menu Overview Table, only showing menus the current user has access to  */
+/*
+ * Building the Menu Overview Table, only showing menus the current user has access to  
+ */
 function _domain_menu_permissions_menu_overview_page() {
   if (user_access('administer menu')) {
     return menu_overview_page();
@@ -122,6 +128,7 @@ function _domain_menu_permissions_menu_overview_page() {
       $rows[] = $row;
     }
   }
+
   return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
@@ -137,7 +144,7 @@ function domain_menu_permissions_module_implements_alter(&$implementations, $hoo
   }
   if ($hook == 'form_menu_edit_item_alter' && is_array($implementations)) {
     unset($implementations['menu']);
-  }  
+  } 
   if ($hook == 'parent_options' && is_array($implementations)) {
     unset($implementations['menu']);
   }
@@ -150,6 +157,7 @@ function domain_menu_permissions_module_implements_alter(&$implementations, $hoo
  *
  * @see menu_node_submit()
  */
+
 function domain_menu_permissions_form_node_form_alter(&$form, $form_state) {
   // Generate a list of possible parents (not including this link or descendants).
   // @todo This must be handled in a #process handler.
