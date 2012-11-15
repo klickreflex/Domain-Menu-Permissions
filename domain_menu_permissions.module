@@ -80,7 +80,7 @@ function _domain_menu_permissions_menu_access($menu) {
   $domain = domain_get_domain();
   global $user;
 
-  if ($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source') 
+  if (($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source') || $menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_secondary_links_source'))
   && _domain_menu_permissions_access('edit domain menu', $domain['domain_id']) ) {
     return TRUE;
   }
@@ -95,7 +95,7 @@ function _domain_menu_permissions_menu_link_access($menu = NULL) {
     return TRUE;
   }
 
-  if ($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source')
+  if (($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source') || $menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_secondary_links_source'))
   && _domain_menu_permissions_access('edit domain menu', $domain['domain_id']) ) {
     return TRUE;
   }    
@@ -120,7 +120,7 @@ function _domain_menu_permissions_menu_overview_page() {
 
   foreach ($result as $menu) {
 
-    if ($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source')
+    if (($menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source') || $menu['menu_name'] == domain_conf_variable_get($domain['domain_id'], 'menu_secondary_links_source'))
     && _domain_menu_permissions_access('edit domain menu', $domain['domain_id']) ) {
       $row = array(theme('menu_admin_overview', array('title' => $menu['title'], 'name' => $menu['menu_name'], 'description' => $menu['description'])));
       $row[] = array('data' => l(t('list links'), 'admin/structure/menu/manage/' . $menu['menu_name']));
@@ -271,7 +271,7 @@ function _domain_menu_permissions_filter_parent_options(&$element) {
     foreach ($option_keys as $option_key) {
       list($menu, $item) = explode(':', $option_key);
       // remove every menu as parent option except the domain's main links source
-      if ($menu != domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source')
+      if ($menu != domain_conf_variable_get($domain['domain_id'], 'menu_main_links_source' || $menu != domain_conf_variable_get($domain['domain_id'], 'menu_secondary_links_source'))
       && _domain_menu_permissions_access('edit domain menu', $domain['domain_id']) ) {
         unset($element['parent']['#options'][$option_key]);
         if ($has_mlid && ($option_key == $default_value)) {
